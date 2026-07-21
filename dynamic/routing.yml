@@ -1,0 +1,63 @@
+http:
+  routers:
+    landing-router:
+      entryPoints:
+        - web
+      rule: "Path(`/`)"
+      service: landing-service
+
+    fastapi-router:
+      entryPoints:
+        - web
+      rule: "PathPrefix(`/fastapi-dashboard`)"
+      service: fastapi-service
+
+    laravel-app-router:
+      entryPoints:
+        - web
+      rule: "PathPrefix(`/laravel-app`)"
+      middlewares:
+        - laravel-prefix-strip
+      service: laravel-app-service
+
+    nirl-qdms-router-dev:
+      entryPoints:
+        - web
+      rule: "PathPrefix(`/nirl-qdms`)"
+      priority: 10
+      middlewares:
+        - nirl-qdms-prefix-strip-dev
+      service: nirl-qdms-service-dev
+
+  middlewares:
+    laravel-prefix-strip:
+      stripPrefix:
+        prefixes:
+          - "/laravel-app"
+
+    nirl-qdms-prefix-strip-dev:
+      stripPrefix:
+        prefixes:
+          - "/nirl-qdms"
+      
+
+  services:
+    landing-service:
+      loadBalancer:
+        servers:
+          - url: "http://local-landing-page:80"
+
+    fastapi-service:
+      loadBalancer:
+        servers:
+          - url: "http://fastapi-dashboard-container:8000"
+
+    laravel-app-service:
+      loadBalancer:
+        servers:
+          - url: "http://laravel-app-nginx:80"
+
+    nirl-qdms-service-dev:
+      loadBalancer:
+        servers:
+          - url: "http://nirl-qdms-nginx-dev:80"

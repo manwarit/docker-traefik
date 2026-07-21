@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  traefik:
+    image: traefik:v3.0
+    container_name: central-traefik-proxy
+    command:
+      - "--api.insecure=true"
+      - "--providers.file.directory=/etc/traefik/dynamic"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - ./dynamic:/etc/traefik/dynamic:ro
+    networks:
+      - apps_network
+
+networks:
+  apps_network:
+    external: true
