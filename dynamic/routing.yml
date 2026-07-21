@@ -1,24 +1,16 @@
 http:
   routers:
-    landing-router:
+    projects-router:
       entryPoints:
         - web
       rule: "Path(`/`)"
-      service: landing-service
+      service: projects-service
 
-    fastapi-router:
+    fastapi-pi-sense-router:
       entryPoints:
         - web
-      rule: "PathPrefix(`/fastapi-dashboard`)"
-      service: fastapi-service
-
-    laravel-app-router:
-      entryPoints:
-        - web
-      rule: "PathPrefix(`/laravel-app`)"
-      middlewares:
-        - laravel-prefix-strip
-      service: laravel-app-service
+      rule: "PathPrefix(`/fastapi-pi-sense`)"
+      service: fastapi-pi-sense-service
 
     nirl-qdms-router-dev:
       entryPoints:
@@ -30,11 +22,6 @@ http:
       service: nirl-qdms-service-dev
 
   middlewares:
-    laravel-prefix-strip:
-      stripPrefix:
-        prefixes:
-          - "/laravel-app"
-
     nirl-qdms-prefix-strip-dev:
       stripPrefix:
         prefixes:
@@ -42,20 +29,15 @@ http:
       
 
   services:
-    landing-service:
+    projects-service:
       loadBalancer:
         servers:
-          - url: "http://local-landing-page:80"
+          - url: "http://local-projects:80"
 
-    fastapi-service:
+    fastapi-pi-sense-service:
       loadBalancer:
         servers:
-          - url: "http://fastapi-dashboard-container:8000"
-
-    laravel-app-service:
-      loadBalancer:
-        servers:
-          - url: "http://laravel-app-nginx:80"
+          - url: "http://fastapi-pi-sense-container:8000"
 
     nirl-qdms-service-dev:
       loadBalancer:
